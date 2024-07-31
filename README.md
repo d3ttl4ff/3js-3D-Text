@@ -1,4 +1,4 @@
-# Three.js Journey
+# Three.js 3D Text
 
 ## Setup
 Download [Node.js](https://nodejs.org/en/download/).
