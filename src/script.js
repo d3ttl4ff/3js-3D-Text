@@ -202,7 +202,7 @@ renderer.setClearColor(debugObject.backColor);
 
 const backgroundTweaks = sceneGui.addFolder({ title: "Background" });
 backgroundTweaks.addBinding(debugObject, "backColor").on("change", () => {
-  renderer.setClearColor(debugObject.color);
+  renderer.setClearColor(debugObject.backColor);
 });
 
 // Smooth Rotation
