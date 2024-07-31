@@ -13,6 +13,7 @@ const gui = new Pane({ title: "Tweaks ('h' to hide)" });
 
 //Debug object
 const debugObject = {
+  backColor: "#000206",
   color: "#6f00e0",
   material: "/textures/matcaps/7.png",
 };
@@ -28,7 +29,8 @@ const canvas = document.querySelector("canvas.webgl");
 
 // Scene
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(0xcccccc, 10, 15);
+scene.fog = new THREE.Fog(debugObject.color, 4.348, 13);
+// scene.fog;
 
 const sceneGui = gui.addFolder({ title: "Scene Tweaks" });
 const fogTweaks = sceneGui.addFolder({ title: "Fog" });
@@ -196,10 +198,10 @@ const renderer = new THREE.WebGLRenderer({
 renderer.setSize(sizes.width, sizes.height);
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 
-renderer.setClearColor(debugObject.color);
+renderer.setClearColor(debugObject.backColor);
 
 const backgroundTweaks = sceneGui.addFolder({ title: "Background" });
-backgroundTweaks.addBinding(debugObject, "color").on("change", () => {
+backgroundTweaks.addBinding(debugObject, "backColor").on("change", () => {
   renderer.setClearColor(debugObject.color);
 });
 
