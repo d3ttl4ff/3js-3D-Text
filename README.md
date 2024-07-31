@@ -1,5 +1,3 @@
-# Three.js 3D Text
-
 <div align="center">
 <img src="thumb.gif" width="1280"/>
 </div>
