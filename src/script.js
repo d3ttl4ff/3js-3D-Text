@@ -4,6 +4,7 @@ import { Pane } from "tweakpane";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader.js";
+import { mergeVertices } from "three/examples/jsm/utils/BufferGeometryUtils.js";
 
 /**
  * Base
@@ -13,7 +14,7 @@ const gui = new Pane({ title: "Tweaks ('h' to hide)" });
 
 //Debug object
 const debugObject = {
-  backColor: "#000206",
+  backColor: "#000000",
   color: "#6f00e0",
   material: "/textures/matcaps/7.png",
 };
@@ -29,7 +30,7 @@ const canvas = document.querySelector("canvas.webgl");
 
 // Scene
 const scene = new THREE.Scene();
-scene.fog = new THREE.Fog(debugObject.color, 4.348, 13);
+scene.fog = new THREE.Fog(debugObject.color, 0, 100);
 // scene.fog;
 
 const sceneGui = gui.addFolder({ title: "Scene Tweaks" });
@@ -75,7 +76,7 @@ objGui
 const fontLoader = new FontLoader();
 let text;
 fontLoader.load("/fonts/JetBrains_Mono_NL_Regular.json", (font) => {
-  const textGeometry = new TextGeometry("</3js\n is Awesome>", {
+  let textGeometry = new TextGeometry("</3js\n is Awesome>", {
     font: font,
     size: 0.5,
     depth: 0.2,
@@ -93,11 +94,39 @@ fontLoader.load("/fonts/JetBrains_Mono_NL_Regular.json", (font) => {
   //   -(textGeometry.boundingBox.max.z - 0.02) * 0.5
   // );
 
+  textGeometry.deleteAttribute("normal");
+  textGeometry = mergeVertices(textGeometry, 1e-3);
+  textGeometry.computeVertexNormals();
+
   textGeometry.center();
 
   const material = new THREE.MeshMatcapMaterial({ matcap: matcapTexture });
   material.wireframe = true;
 
+  const material2 = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff,
+    metalness: 0,
+    roughness: 0,
+    transmission: 1,
+    thickness: 1,
+    envMapIntensity: 1,
+    clearcoat: 1,
+    clearcoatRoughness: 0,
+    ior: 1.5,
+    opacity: 1,
+    transparent: true,
+  });
+  
+  objGui.addBinding(material2, "metalness", { min: 0, max: 1, step: 0.001 });
+  objGui.addBinding(material2, "roughness", { min: 0, max: 1, step: 0.001 });
+  objGui.addBinding(material2, "transmission", { min: 0, max: 1, step: 0.001 });
+  objGui.addBinding(material2, "thickness", { min: 0, max: 1, step: 0.001 });
+  objGui.addBinding(material2, "envMapIntensity", { min: 0, max: 1, step: 0.001 });
+  objGui.addBinding(material2, "clearcoat", { min: 0, max: 1, step: 0.001 });
+  objGui.addBinding(material2, "clearcoatRoughness", { min: 0, max: 1, step: 0.001 });
+  objGui.addBinding(material2, "ior", { min: 0, max: 2.333, step: 0.001 });
+  objGui.addBinding(material2, "opacity", { min: 0, max: 1, step: 0.001 });
+  
   objGui.addBinding(material, "wireframe");
 
   text = new THREE.Mesh(textGeometry, material);
@@ -107,7 +136,17 @@ fontLoader.load("/fonts/JetBrains_Mono_NL_Regular.json", (font) => {
   const boxGeometry = new THREE.BoxGeometry(0.3, 0.3, 0.3);
 
   for (let i = 0; i < 200; i++) {
-    const donut = new THREE.Mesh(donutGeometry, material);
+    let mat1 = material;
+    let mat2 = material;
+    if (i % 10 == 0) {
+      mat1 = material2
+    }
+
+    if (i % 5 == 0) {
+      mat2 = material2
+    }
+
+    const donut = new THREE.Mesh(donutGeometry, mat1);
 
     donut.position.x = (Math.random() - 0.5) * 15;
     donut.position.y = (Math.random() - 0.5) * 15;
@@ -119,7 +158,7 @@ fontLoader.load("/fonts/JetBrains_Mono_NL_Regular.json", (font) => {
     const scaleValue = Math.random();
     donut.scale.set(scaleValue, scaleValue, scaleValue);
 
-    const box = new THREE.Mesh(boxGeometry, material);
+    const box = new THREE.Mesh(boxGeometry, mat2);
 
     box.position.x = (Math.random() - 0.5) * 15;
     box.position.y = (Math.random() - 0.5) * 15;
@@ -139,7 +178,7 @@ fontLoader.load("/fonts/JetBrains_Mono_NL_Regular.json", (font) => {
  */
 const rgbeLoader = new RGBELoader();
 rgbeLoader.load(
-  "./textures/environmentMap/kloppenheim_06_puresky_2k.hdr",
+  "./textures/environmentMap/autumn_field_puresky_2k.hdr",
   (environmentMap) => {
     environmentMap.mapping = THREE.EquirectangularReflectionMapping;
 
