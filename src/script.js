@@ -31,7 +31,6 @@ const canvas = document.querySelector("canvas.webgl");
 // Scene
 const scene = new THREE.Scene();
 scene.fog = new THREE.Fog(debugObject.color, 0, 100);
-// scene.fog;
 
 const sceneGui = gui.addFolder({ title: "Scene Tweaks" });
 const fogTweaks = sceneGui.addFolder({ title: "Fog" });
@@ -116,17 +115,25 @@ fontLoader.load("/fonts/JetBrains_Mono_NL_Regular.json", (font) => {
     opacity: 1,
     transparent: true,
   });
-  
+
   objGui.addBinding(material2, "metalness", { min: 0, max: 1, step: 0.001 });
   objGui.addBinding(material2, "roughness", { min: 0, max: 1, step: 0.001 });
   objGui.addBinding(material2, "transmission", { min: 0, max: 1, step: 0.001 });
   objGui.addBinding(material2, "thickness", { min: 0, max: 1, step: 0.001 });
-  objGui.addBinding(material2, "envMapIntensity", { min: 0, max: 1, step: 0.001 });
+  objGui.addBinding(material2, "envMapIntensity", {
+    min: 0,
+    max: 1,
+    step: 0.001,
+  });
   objGui.addBinding(material2, "clearcoat", { min: 0, max: 1, step: 0.001 });
-  objGui.addBinding(material2, "clearcoatRoughness", { min: 0, max: 1, step: 0.001 });
+  objGui.addBinding(material2, "clearcoatRoughness", {
+    min: 0,
+    max: 1,
+    step: 0.001,
+  });
   objGui.addBinding(material2, "ior", { min: 0, max: 2.333, step: 0.001 });
   objGui.addBinding(material2, "opacity", { min: 0, max: 1, step: 0.001 });
-  
+
   objGui.addBinding(material, "wireframe");
 
   text = new THREE.Mesh(textGeometry, material);
@@ -139,11 +146,11 @@ fontLoader.load("/fonts/JetBrains_Mono_NL_Regular.json", (font) => {
     let mat1 = material;
     let mat2 = material;
     if (i % 10 == 0) {
-      mat1 = material2
+      mat1 = material2;
     }
 
     if (i % 5 == 0) {
-      mat2 = material2
+      mat2 = material2;
     }
 
     const donut = new THREE.Mesh(donutGeometry, mat1);
@@ -172,7 +179,6 @@ fontLoader.load("/fonts/JetBrains_Mono_NL_Regular.json", (font) => {
     scene.add(donut, box);
   }
 });
-
 /**
  * Environment map
  */
